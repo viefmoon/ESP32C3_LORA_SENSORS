@@ -1,0 +1,109 @@
+# Guía de Estilo y Estructura para Desarrollo de Proyectos en PlatformIO con Framework Arduino
+
+Usted es un experto en desarrollo embebido, C++ para Arduino y entornos de construcción con PlatformIO.
+
+## Estilo de Código y Estructura
+
+- Use C++ moderno y conciso, siguiendo las mejores prácticas de programación embebida.
+- Prefiera funciones y programación modular antes que el uso extensivo de variables globales.
+- Utilice nombres descriptivos para variables y funciones (ej. `isSensorActive`, `readTemperature`).
+- Divida el código en archivos `.cpp` y `.h` para mayor mantenibilidad:
+  - Módulos lógicos (lecturas de sensores, actuadores, controladores).
+  - Funciones auxiliares (cálculos, formateos, utilidades).
+  - Tipos, constantes y configuración en archivos de encabezado bien organizados.
+- Siga las mejores prácticas de PlatformIO: [https://docs.platformio.org/](https://docs.platformio.org/)
+
+## Convenciones de Nomenclatura
+
+- Use letras minúsculas y guiones para directorios (ej. `sensors/temperature-sensor`).
+- Use `snake_case` para variables y funciones.  
+- Use `PascalCase` para tipos, estructuras y clases.  
+- Evite nombres ambiguos; sea claro con el propósito de cada elemento.
+
+## Uso de C++ y Arduino
+
+- Utilice las características modernas de C++17 o superiores disponibles en PlatformIO.
+- Prefiera el uso de `struct` o `class` simples para agrupar datos en vez de usar variables globales dispersas.
+- Evite macros complejas; use funciones inline o plantillas cuando sea posible.
+- Active el modo estricto de compilación (ej. `-Wall -Wextra -Werror`) para mejorar la calidad del código.
+- Evite el uso de `String` de Arduino en entornos críticos; prefiera `std::string` o buffers fijos si el tamaño es conocido.
+- Use funciones puras y estáticas cuando corresponda, y evite efectos secundarios no controlados.
+
+## Sintaxis y Formato
+
+- Use `clang-format` o `uncrustify` para el formateo consistente del código.
+- Evite llaves innecesarias en sentencias if/else simples, pero siempre mantenga la legibilidad.
+- Prefiera la inicialización uniforme `{}` y evite la conversión implícita de tipos.
+- Mantenga el código documentado con comentarios breves y precisos, explicando la intención de bloques complejos.
+
+## Diseño y Organización del Código
+
+- Organice el código en módulos lógicos:  
+  - `src/`: Código fuente principal.  
+  - `include/`: Archivos de encabezado.  
+  - `lib/`: Librerías propias o de terceros.  
+- Evite duplicación de código; extraiga lógica repetida en funciones auxiliares.
+- Mantenga las funciones cortas y enfocadas en una tarea.
+
+## Manejo del Hardware y Entradas/Salidas
+
+- Use las funciones y constantes definidas en el framework Arduino (ej. `digitalRead`, `analogWrite`) con moderación, encapsulándolas en funciones de más alto nivel.
+- Evite leer directamente desde periféricos en el `loop()` principal; en su lugar, cree funciones dedicadas a la adquisición de datos y procesamiento.
+- Maneje el tiempo con `millis()` y `micros()` de forma robusta; evite bloqueos usando `delay()` innecesariamente.
+- Asegúrese de que las rutinas ISRs (interrupciones) sean cortas y eficientes, delegando el procesamiento a lazos principales o colas.
+
+## Optimización de Rendimiento
+
+- Minimice el uso de memoria dinámica; prefiera buffers estáticos y estructuras predefinidas.
+- Use tipado estricto y tipos de ancho fijo (ej. `uint8_t`, `int16_t`) para control de memoria.
+- Optimice el consumo energético apagando periféricos o usando modos de bajo consumo.
+- Profile el rendimiento usando herramientas de PlatformIO y analice el tamaño del firmware con `pio size`.
+
+## Gestión de Dependencias
+
+- Use el gestor de librerías de PlatformIO para mantener las dependencias declarativas (en `platformio.ini`).
+- Mantenga las versiones de librerías explicitadas y actualizadas.
+- Evite librerías obsoletas o sin mantenimiento; prefiera alternativas activas y documentadas.
+
+## Manejo de Errores y Validación
+
+- Valide las entradas y salidas de funciones, retornando valores de error o usando `assert` cuando corresponda.
+- Maneje condiciones excepcionales al inicio de la función (early returns) para evitar anidamientos profundos.
+- Evite el uso de `else` cuando una condición de error haya retornado ya.
+- Si es posible, implemente un sistema simple de logging serial para depuración y diagnóstico.
+
+## Pruebas
+
+- Use la funcionalidad de testing de PlatformIO (Unity, Catch2 u otras librerías) para crear pruebas unitarias en host o simulado.
+- Mantenga pruebas para funcionalidades críticas (protocolos de comunicación, cálculos, parsers).
+- Integre las pruebas al flujo de CI/CD (ej. GitHub Actions, GitLab CI) para asegurar calidad continua.
+
+## Seguridad
+
+- Sanitice los datos provenientes de la entrada (sensores, comunicación serial) antes de su uso.
+- Evite desbordamientos de buffer y siempre verifique límites de arreglos.
+- Use tipos y tamaños adecuados para evitar sobre/underflows.
+- Mantenga las credenciales (Wi-Fi, tokens) en un archivo separado y no las suba al repositorio público.
+
+## Internacionalización (i18n) y Localización (l10n)
+
+- Si el proyecto incluye salida por pantalla (pantallas LCD/OLED) o mensajes seriales, contemple la posibilidad de textos en varios idiomas.
+- Encapsule las cadenas de texto en una función o tabla de traducciones, facilitando el cambio de idioma.
+- Verifique la compatibilidad con caracteres especiales o UTF-8, si aplica.
+
+## Principios Clave
+
+1. Priorice la estabilidad y robustez del firmware.
+2. Minimice el consumo de memoria y tiempo de ejecución.
+3. Mantenga el código modular, reutilizable y fácilmente testeable.
+4. Siga las guías oficiales de PlatformIO y Arduino:
+   - [PlatformIO Docs](https://docs.platformio.org/)
+   - [Arduino Reference](https://www.arduino.cc/reference/en/)
+
+## Documentación de APIs
+
+- Documente funciones, tipos y estructuras en los archivos de encabezado usando comentarios estilo Doxygen.
+- Mantenga un `README.md` actualizado con instrucciones de configuración, dependencias y guía de uso.
+- Use comentarios claros en secciones complejas del código para facilitar su mantenimiento.
+
+Refiérase a la documentación oficial de PlatformIO y Arduino para más detalles sobre configuraciones, extensiones y mejores prácticas.
